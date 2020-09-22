@@ -2,12 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { MenuItem, FormControl, Select, Card, CardContent} from "@material-ui/core";
 import InfoBox from './InfoBox';
 import Map from './Map';
+import Table from "./Table";
+import { sortData } from './util';
 import './App.css';
 
 function App() {
   const [countries, setCountries] = useState([]);
   const [country, setCountry] = useState('worldwide');
   const [countryInfo, setCountryInfo] = useState({});
+  const [tableData, setTableData] = useState([]);
+
+  useEffect(() => {
+    fetch("https://disease.sh/v3/covid-19/all")
+    .then(response => response.json())
+    .then(data => {
+      setCountryInfo(data);
+    })
+  }, [])
 
   useEffect (() => {
     const getCountriesData = async () => {
@@ -20,6 +31,8 @@ function App() {
             value: country.countryInfo.iso2 // UK, USA, FR, BE
           }));
 
+          const sortedData = sortData(data);
+          setTableData(sortedData);
           setCountries(countries);
       });
     };
@@ -66,11 +79,11 @@ console.log('RANDOM WORDS >>>', countryInfo);
         </div>
 
         <div className="app__stats">
-          <InfoBox title="Coronavirus cases" cases={123} total={2000} />
+          <InfoBox title="Coronavirus cases" cases={countryInfo.todayCases} total={countryInfo.cases} />
 
-          <InfoBox title="Recovered" cases={1234} total={3000} />
+          <InfoBox title="Recovered" cases={countryInfo.todayRecovered} total={countryInfo.recovered} />
 
-          <InfoBox title="Deaths" cases={766} total={4000} />
+          <InfoBox title="Deaths" cases={countryInfo.todayDeaths} total={countryInfo.deaths} />
         </div>
 
         <Map />
@@ -78,7 +91,7 @@ console.log('RANDOM WORDS >>>', countryInfo);
       <Card className="app__right">
         <CardContent>
           <h3>Live cases by Country</h3>
-          {/* Table */}
+          <Table countries={tableData} />
           <h3>Worldwide new cases</h3>
           {/* Graph */}
         </CardContent>
