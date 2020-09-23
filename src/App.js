@@ -4,6 +4,7 @@ import InfoBox from './InfoBox';
 import Map from './Map';
 import Table from "./Table";
 import { sortData } from './util';
+import LineGraph from './LineGraph';
 import './App.css';
 
 function App() {
@@ -93,6 +94,7 @@ console.log('RANDOM WORDS >>>', countryInfo);
           <h3>Live cases by Country</h3>
           <Table countries={tableData} />
           <h3>Worldwide new cases</h3>
+          <LineGraph />
           {/* Graph */}
         </CardContent>
       </Card>
